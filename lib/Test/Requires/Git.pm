@@ -3,7 +3,10 @@ package Test::Requires::Git;
 use strict;
 use warnings;
 
+use Carp;
 use Scalar::Util qw( looks_like_number );
+
+use base 'Test::Builder::Module';
 
 # comparison logic stolen from Git::Repository
 sub _version_gt {
@@ -43,5 +46,59 @@ my %check = (
     version_lt => sub { $_[0] ne $_[1] && !_version_gt(@_) },
     version_ge => sub { $_[0] eq $_[1] || _version_gt(@_) },
 );
+
+sub import {
+    my $class = shift;
+    my $caller = caller(0);
+
+    # export methods
+    {
+        no strict 'refs';
+        *{"$caller\::test_requires_git"} = \&test_requires_git;
+    }
+
+    # test arguments
+    test_requires_git(@_) if @_;
+}
+
+sub test_requires_git {
+    my @spec = @_;
+    croak 'Odd number of elements in git specification' if @spec % 2;
+
+    # get the git version
+    my ($version) = qx{git --version} =~ /^git version (.*)/g;
+
+    # perform the check
+    my $ok = 1;
+    while ( my ( $spec, $arg ) = splice @spec, 0, 2 ) {
+        croak "Unknown git specification '$spec'" if !exists $check{$spec};
+        $ok = $check{$spec}->( $version, $arg );
+        last if !$ok;
+    }
+
+    # skip if needed
+    if ( !$ok ) {
+        my $builder = __PACKAGE__->builder;
+
+        # no plan declared yet
+        if ( !defined $builder->has_plan ) {
+            $builder->skip_all();
+        }
+
+        # the plan is no_plan
+        elsif ( $builder->has_plan eq 'no_plan' ) {
+            $builder->skip();
+            exit 0;
+        }
+
+        # some plan was declared, skip all tests one by one
+        else {
+            for ( 1 .. $builder->has_plan ) {
+                $builder->skip();
+            }
+            exit 0;
+        }
+    }
+}
 
 'git';
