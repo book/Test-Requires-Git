@@ -67,11 +67,13 @@ sub test_requires_git {
 
     # get the git version
     my ($version) = qx{git --version} =~ /^git version (.*)/g;
+    $version =~ s/^(?<=^1\.0\.)0([ab])$/$1^"P"/e;    # aliases
 
     # perform the check
     my $ok = 1;
     while ( my ( $spec, $arg ) = splice @spec, 0, 2 ) {
         croak "Unknown git specification '$spec'" if !exists $check{$spec};
+        $arg =~ s/^(?<=^1\.0\.)0([ab])$/$1^"P"/e;    # aliases
         $ok = $check{$spec}->( $version, $arg );
         last if !$ok;
     }
