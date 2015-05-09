@@ -70,20 +70,32 @@ sub test_requires_git {
     $version =~ s/^(?<=^1\.0\.)0([ab])$/$1^"P"/e;    # aliases
 
     # perform the check
-    my $ok = 1;
+    my ( $ok, $skip ) = ( 1, 0 );
     while ( my ( $spec, $arg ) = splice @spec, 0, 2 ) {
+        if ( $spec eq 'skip' ) {
+            $skip = $arg;
+            next;
+        }
         croak "Unknown git specification '$spec'" if !exists $check{$spec};
         $arg =~ s/^(?<=^1\.0\.)0([ab])$/$1^"P"/e;    # aliases
-        $ok = $check{$spec}->( $version, $arg );
-        last if !$ok;
+        if ( ! $check{$spec}->( $version, $arg ) ) {
+            $ok = 0;
+        }
     }
 
     # skip if needed
     if ( !$ok ) {
         my $builder = __PACKAGE__->builder;
 
+        # skip a specified number of tests
+        if ( $skip ) {
+            $builder->skip() for 1 .. $skip;
+            no warnings 'exiting';
+            last SKIP;
+        }
+
         # no plan declared yet
-        if ( !defined $builder->has_plan ) {
+        elsif ( !defined $builder->has_plan ) {
             $builder->skip_all();
         }
 
