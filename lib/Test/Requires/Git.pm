@@ -70,7 +70,7 @@ sub test_requires_git {
     $version =~ s/^(?<=^1\.0\.)0([ab])$/$1^"P"/e;    # aliases
 
     # perform the check
-    my ( $ok, $skip ) = ( 1, 0 );
+    my ( $ok, $skip, $why ) = ( 1, 0, '' );
     while ( my ( $spec, $arg ) = splice @spec, 0, 2 ) {
         if ( $spec eq 'skip' ) {
             $skip = $arg;
@@ -78,8 +78,9 @@ sub test_requires_git {
         }
         croak "Unknown git specification '$spec'" if !exists $check{$spec};
         $arg =~ s/^(?<=^1\.0\.)0([ab])$/$1^"P"/e;    # aliases
-        if ( ! $check{$spec}->( $version, $arg ) ) {
+        if ( !$why && !$check{$spec}->( $version, $arg ) ) {
             $ok = 0;
+            $why = "$version $spec $arg";
         }
     }
 
@@ -89,25 +90,25 @@ sub test_requires_git {
 
         # skip a specified number of tests
         if ( $skip ) {
-            $builder->skip() for 1 .. $skip;
+            $builder->skip($why) for 1 .. $skip;
             no warnings 'exiting';
             last SKIP;
         }
 
         # no plan declared yet
         elsif ( !defined $builder->has_plan ) {
-            $builder->skip_all();
+            $builder->skip_all($why);
         }
 
         # the plan is no_plan
         elsif ( $builder->has_plan eq 'no_plan' ) {
-            $builder->skip();
+            $builder->skip($why);
             exit 0;
         }
 
         # some plan was declared, skip all tests one by one
         else {
-            $builder->skip() for 1 .. $builder->has_plan;
+            $builder->skip($why) for 1 .. $builder->has_plan;
             exit 0;
         }
     }
