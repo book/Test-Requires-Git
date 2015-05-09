@@ -18,8 +18,9 @@ my $file = File::Spec->catfile( $dir, $^O eq 'MSWin32' ? 'git.bat' : 'git' );
 # import to build one fake git at compile time
 sub import {
     my $package = shift;
+    my $caller  = caller(0);
     no strict 'refs';
-    *{"$package\::fake_git"} = \&fake_git;
+    *{"$caller\::fake_git"} = \&fake_git;
     fake_git(shift) if @_;
 }
 
