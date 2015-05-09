@@ -1,0 +1,4 @@
+.build
+Test-Requires-Git-*
+*.swp
+mess
