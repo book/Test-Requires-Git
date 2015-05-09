@@ -11,6 +11,9 @@ plan 'no_plan';
 test_requires_git version_gt => '1.2.0';
 
 # skip
-test_requires_git version_lt => '1.2.1';
+test_requires_git
+  version_lt => '1.2.1',
+  version_eq => '1.2.3',
+  version_ne => '1.2.3';
 
 fail('cannot happen');
