@@ -115,3 +115,122 @@ sub test_requires_git {
 }
 
 'git';
+
+__END__
+
+=encoding utf-8
+
+=head1 NAME
+
+Test::Requires::Git - Check your test requirements against the available version of Git
+
+=head1 SYNOPSIS
+
+    use Test::Requires::Git;
+
+    # needs some git that supports `git init $dir`
+    test_requires_git version_ge => '1.6.5';
+
+=head1 DESCRIPTION
+
+Test::Requires::Git checks if the version of Git available for testing
+meets the given requirements.
+
+The "current git" is obtained by running C<git --version> (so the first
+C<git> binary found in the C<PATH> will be tested).
+
+If the checks fail, then all tests will be I<skipped>.
+
+=head1 EXPORTED FUNCTIONS
+
+=head2 test_requires_git
+
+    # skip all
+    test_requires_git version_ge => '1.6.5';
+
+    # skip 2
+  SKIP: {
+        test_requires_git
+          skip       => 2,
+          version_ge => '1.7.12';
+        ...;
+    }
+
+Takes a list of version requirements (see L</GIT VERSION CHECKING> below),
+and I<skip> all tests if one of them does not pass.
+
+If the C<skip> parameter is given, only the specified number of tests will
+be skipped.
+
+All conditions must be satisfied for the check to pass.
+
+=head1 GIT VERSION CHECKING
+
+The following version checks are currently supported.
+
+Note that versions C<1.0.0a> and C<1.0.0b> are respectively turned into
+C<1.0.1> and C<1.0.2> internally.
+
+=head2 version
+
+=head2 version_eq
+
+    test_requires_git version    => $version;
+    test_requires_git version_eq => $version;
+
+Passes if the current B<git> version is I<equal> to C<$version>.
+
+=head2 version_ne
+
+    test_requires_git version_eq => $version;
+
+Passes if the current B<git> version is I<not equal> to C<$version>.
+
+=head2 version_lt
+
+    test_requires_git version_lt => $version;
+
+Passes if the current B<git> version is I<less than> C<$version>.
+
+=head2 version_gt
+
+    test_requires_git version_gt => $version;
+
+Passes if the current B<git> version is I<greater than> C<$version>.
+
+=head2 version_le
+
+    test_requires_git version_le => $version;
+
+Passes if the current B<git> version is I<less than or equal> C<$version>.
+
+=head2 version_ge
+
+    test_requires_git version_ge => $version;
+
+Passes if the current B<git> version is I<greater than or equal > C<$version>.
+
+=head1 SEE ALSO
+
+L<Test::Requires>
+
+=head1 ACKNOWLEDGEMENTS
+
+Thanks to Oliver Mengué (DOLMEN), who gave me the idea for this module
+at the Perl QA Hackathon 2015 in Berlin, and suggested to give a look
+at L<Test::Requires> for inspiration.
+
+=head1 AUTHOR
+
+Philippe Bruhat (BooK), <book@cpan.org>.
+
+=head1 COPYRIGHT
+
+Copyright 2015 Philippe Bruhat (BooK), all rights reserved.
+
+=head1 LICENSE
+
+This program is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.
+
+=cut
