@@ -95,9 +95,7 @@ sub test_requires_git {
 
         # some plan was declared, skip all tests one by one
         else {
-            for ( 1 .. $builder->has_plan ) {
-                $builder->skip();
-            }
+            $builder->skip() for 1 .. $builder->has_plan;
             exit 0;
         }
     }
