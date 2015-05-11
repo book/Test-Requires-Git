@@ -86,8 +86,9 @@ sub test_requires_git {
         }
     }
     else {
-        $ok  = 0;
-        $why = '`git` binary not available or broken';
+        $ok   = 0;
+        $why  = '`git` binary not available or broken';
+        $skip = {@spec}->{skip};
     }
 
     # skip if needed
