@@ -67,21 +67,27 @@ sub test_requires_git {
 
     # get the git version
     my ($version) = qx{git --version} =~ /^git version (.*)/g;
-    $version =~ s/^(?<=^1\.0\.)0([ab])$/$1^"P"/e;    # aliases
 
     # perform the check
     my ( $ok, $skip, $why ) = ( 1, 0, '' );
-    while ( my ( $spec, $arg ) = splice @spec, 0, 2 ) {
-        if ( $spec eq 'skip' ) {
-            $skip = $arg;
-            next;
+    if ($version) {
+        $version =~ s/^(?<=^1\.0\.)0([ab])$/$1^"P"/e;    # aliases
+        while ( my ( $spec, $arg ) = splice @spec, 0, 2 ) {
+            if ( $spec eq 'skip' ) {
+                $skip = $arg;
+                next;
+            }
+            croak "Unknown git specification '$spec'" if !exists $check{$spec};
+            $arg =~ s/^(?<=^1\.0\.)0([ab])$/$1^"P"/e;    # aliases
+            if ( !$why && !$check{$spec}->( $version, $arg ) ) {
+                $ok  = 0;
+                $why = "$version $spec $arg";
+            }
         }
-        croak "Unknown git specification '$spec'" if !exists $check{$spec};
-        $arg =~ s/^(?<=^1\.0\.)0([ab])$/$1^"P"/e;    # aliases
-        if ( !$why && !$check{$spec}->( $version, $arg ) ) {
-            $ok = 0;
-            $why = "$version $spec $arg";
-        }
+    }
+    else {
+        $ok  = 0;
+        $why = '`git` binary not available or broken';
     }
 
     # skip if needed
