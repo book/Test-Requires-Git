@@ -3,11 +3,13 @@ use warnings;
 use Test::More;
 use t::FakeGit '1.2.3';
 
-use Test::Requires::Git version_gt => '1.0.0';
+use Test::Requires::Git; # load without check
 
 plan tests => 8;
 
-pass( "passed the compile-time check version_gt => '1.0.0'");
+# force run-time evaluation
+eval "use Test::Requires::Git version_gt => '1.0.0';";
+pass("passed the compile-time check version_gt => '1.0.0'");
 
 test_requires_git version => '1.2.3';
 
