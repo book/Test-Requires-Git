@@ -44,7 +44,9 @@ my %tests = (
    version_ge => [ @greater ],
 );
 
-plan tests => sum map scalar @$_, values %tests;
+plan tests => 1 + sum map scalar @$_, values %tests;
+
+pass('initial pass');
 
 # run all failing tests in a SKIP block
 for my $op ( sort keys %tests ) {
