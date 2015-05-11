@@ -71,14 +71,14 @@ sub test_requires_git {
     # perform the check
     my ( $ok, $skip, $why ) = ( 1, 0, '' );
     if ($version) {
-        $version =~ s/^(?<=^1\.0\.)0([ab])$/$1^"P"/e;    # aliases
+        $version =~ s/(?<=^1\.0\.)0([ab])$/$1^"P"/e;    # aliases
         while ( my ( $spec, $arg ) = splice @spec, 0, 2 ) {
             if ( $spec eq 'skip' ) {
                 $skip = $arg;
                 next;
             }
             croak "Unknown git specification '$spec'" if !exists $check{$spec};
-            $arg =~ s/^(?<=^1\.0\.)0([ab])$/$1^"P"/e;    # aliases
+            $arg =~ s/(?<=^1\.0\.)0([ab])$/$1^"P"/e;    # aliases
             if ( !$why && !$check{$spec}->( $version, $arg ) ) {
                 $ok  = 0;
                 $why = "$version $spec $arg";
