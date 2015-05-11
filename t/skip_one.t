@@ -37,11 +37,11 @@ push @lesser, join '.', @version[ 0 .. 2 ], 'rc1';
 my ( @pass, @skip );
 for my $t ( # [ op => [ pass ], [ skip ] ]
     [ version_eq => [$version], [ @lesser, @greater ] ],
-    [ version_ne => [ @lesser, @greater ], [$version] ],
+    #[ version_ne => [ @lesser, @greater ], [$version] ],
     [ version_lt => [@greater], [ @lesser,  $version ] ],
     [ version_gt => [@lesser],  [ $version, @greater ] ],
-    [ version_le => [ $version, @greater ], [@lesser] ],
-    [ version_ge => [ @lesser,  $version ], [@greater] ],
+    #[ version_le => [ $version, @greater ], [@lesser] ],
+    #[ version_ge => [ @lesser,  $version ], [@greater] ],
   )
 {
     my ( $op, $pass, $skip ) = @$t;
@@ -85,14 +85,16 @@ push @pass,
 # operator reversal: $a op $b <=> $b rop $a
 my %reverse = (
     version_eq => 'version_eq',
-    version_ne => 'version_ne',
-    version_ge => 'version_le',
+    #version_ne => 'version_ne',
+    #version_ge => 'version_le',
     version_gt => 'version_lt',
-    version_le => 'version_ge',
+    #version_le => 'version_ge',
     version_lt => 'version_gt',
 );
-push @pass, map [ $_->[2], $reverse{ $_->[1] }, $_->[0] ], @pass;
-push @skip, map [ $_->[2], $reverse{ $_->[1] }, $_->[0] ], @skip;
+push @pass, map [ $_->[2], $reverse{ $_->[1] }, $_->[0] ],
+  grep exists $reverse{ $_->[1] }, @pass;
+push @skip, map [ $_->[2], $reverse{ $_->[1] }, $_->[0] ],
+  grep exists $reverse{ $_->[1] }, @skip;
 
 # operator negation
 my %negate = (
