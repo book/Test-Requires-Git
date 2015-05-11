@@ -105,6 +105,10 @@ my %negate = (
 push @pass, map [ $_->[0], $negate{ $_->[1] }, $_->[2] ], @skip;
 push @skip, map [ $_->[0], $negate{ $_->[1] }, $_->[2] ], @pass;
 
+# sort test cases by v1
+@pass = sort { $a->[0] cmp $b->[0] } @pass;
+@skip = sort { $a->[0] cmp $b->[0] } @skip;
+
 plan tests => 1 + 2 * @pass + @skip;
 
 pass('initial pass');
@@ -112,26 +116,30 @@ pass('initial pass');
 # run all tests in a SKIP block
 
 # PASS
+my $prev = '';
 for my $t (@pass) {
     my ( $v1, $op, $v2 ) = @$t;
-    fake_git($v1);
-    my $passed = 0;
+    fake_git($v1) if $v1 ne $prev;
 
+    my $passed = 0;
   SKIP: {
         test_requires_git $op => $v2, skip => 1;
         pass("$v1 $op $v2");
         $passed = 1;
     }
     ok( $passed, "$v1 $op $v2" );
+    $prev = $v1;
 }
 
 # SKIP
+$prev = '';
 for my $t (@skip) {
     my ( $v1, $op, $v2 ) = @$t;
-    fake_git($v1);
+    fake_git($v1) if $v1 ne $prev;
 
   SKIP: {
         test_requires_git $op => $v2, skip => 1;
         fail("$v1 $op $v2");
     }
+    $prev = $v1;
 }
