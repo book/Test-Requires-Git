@@ -29,7 +29,7 @@ sub fake_git {
     my ($version) = @_;
     unlink $file if -e $file;
 
-    my $message = $version =~ /^[1-9]/ ? "git version $version" : 'not git';
+    my $message = $version =~ /^[0-9]/ ? "git version $version" : 'not git';
 
     open my $fh, '>', $file or die "Can't open $file for writing: $!";
     print {$fh} $^O eq 'MSWin32' ? << "WIN32" : << "UNIX";
