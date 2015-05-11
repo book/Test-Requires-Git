@@ -5,7 +5,11 @@ use t::FakeGit '1.2.3';
 
 use Test::Requires::Git; # load without check
 
-plan tests => 8;
+plan tests => 9;
+
+# any skip will 'skip all',
+# this line ensures there will be a 'bad plan' failure in that case
+pass('initial pass');
 
 # force run-time evaluation
 eval "use Test::Requires::Git version_gt => '1.0.0';";
