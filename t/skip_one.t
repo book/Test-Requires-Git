@@ -16,7 +16,7 @@ my @version = (
 );
 my $version = join '.', @version;
 diag "fake version: $version";
-fake_git( $version );
+fake_git($version);
 
 # generate other versions based on the current one
 my ( @lesser, @greater );
@@ -31,31 +31,75 @@ for ( 0 .. $#version ) {
 }
 
 # an rc is always lesser
-push @lesser, join '.', @version[0..2],'rc1';
+push @lesser, join '.', @version[ 0 .. 2 ], 'rc1';
 
-# the actual tests
-my %tests = (
-   version    => [ @lesser, @greater ],
-   version_eq => [ @lesser, @greater ],
-   version_ne => [ $version ],
-   version_lt => [ @lesser, $version ],
-   version_gt => [ $version, @greater ],
-   version_le => [ @lesser ],
-   version_ge => [ @greater ],
+# build up test data
+my ( @pass, @skip );
+for my $t ( # [ op => [ pass ], [ skip ] ]
+    [ version_eq => [$version], [ @lesser, @greater ] ],
+    [ version_ne => [ @lesser, @greater ], [$version] ],
+    [ version_lt => [@greater], [ @lesser,  $version ] ],
+    [ version_gt => [@lesser],  [ $version, @greater ] ],
+    [ version_le => [ $version, @greater ], [@lesser] ],
+    [ version_ge => [ @lesser,  $version ], [@greater] ],
+  )
+{
+    my ( $op, $pass, $skip ) = @$t;
+    push @pass, map [ $version, $op, $_ ], @$pass;
+    push @skip, map [ $version, $op, $_ ], @$skip;
+}
+
+# operator reversal: $a op $b <=> $b rop $a
+my %reverse = (
+    version_eq => 'version_eq',
+    version_ne => 'version_ne',
+    version_ge => 'version_le',
+    version_gt => 'version_lt',
+    version_le => 'version_ge',
+    version_lt => 'version_gt',
 );
+push @pass, map [ $_->[2], $reverse{ $_->[1] }, $_->[0] ], @pass;
+push @skip, map [ $_->[2], $reverse{ $_->[1] }, $_->[0] ], @skip;
 
-plan tests => 1 + sum map scalar @$_, values %tests;
+# operator negation
+my %negate = (
+    version_ne => 'version_eq',
+    version_eq => 'version_ne',
+    version_ge => 'version_lt',
+    version_gt => 'version_le',
+    version_le => 'version_gt',
+    version_lt => 'version_ge',
+);
+push @pass, map [ $_->[0], $negate{ $_->[1] }, $_->[2] ], @skip;
+push @skip, map [ $_->[0], $negate{ $_->[1] }, $_->[2] ], @pass;
+
+plan tests => 1 + 2 * @pass + @skip;
 
 pass('initial pass');
 
-# run all failing tests in a SKIP block
-for my $op ( sort keys %tests ) {
+# run all tests in a SKIP block
 
-    # skip or fail
-    for my $v ( @{ $tests{$op} } ) {
-      SKIP: {
-            test_requires_git $op => $v, skip => 1;
-            fail("$version $op $v");
-        }
+# PASS
+for my $t (@pass) {
+    my ( $v1, $op, $v2 ) = @$t;
+    fake_git($v1);
+    my $passed = 0;
+
+  SKIP: {
+        test_requires_git $op => $v2, skip => 1;
+        pass("$v1 $op $v2");
+        $passed = 1;
+    }
+    ok( $passed, "$v1 $op $v2" );
+}
+
+# SKIP
+for my $t (@skip) {
+    my ( $v1, $op, $v2 ) = @$t;
+    fake_git($v1);
+
+  SKIP: {
+        test_requires_git $op => $v2, skip => 1;
+        fail("$v1 $op $v2");
     }
 }
