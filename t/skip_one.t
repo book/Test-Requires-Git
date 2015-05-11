@@ -49,6 +49,38 @@ for my $t ( # [ op => [ pass ], [ skip ] ]
     push @skip, map [ $version, $op, $_ ], @$skip;
 }
 
+# more complex cases
+push @pass,
+  [ '1.7.2.rc0.13.gc9eaaa', 'version_eq', '1.7.2.rc0.13.gc9eaaa' ],
+  [ '1.7.2.rc0.13.gc9eaaa', 'version_ge', '1.7.2.rc0.13.gc9eaaa' ],
+  [ '1.7.2.rc0.13.gc9eaaa', 'version_le', '1.7.2.rc0.13.gc9eaaa' ],
+  [ '1.7.1',                'version_gt', '1.7.1.rc0' ],
+  [ '1.7.1.rc1',            'version_gt', '1.7.1.rc0' ],
+  [ '1.3.2',                'version_gt', '0.99' ],
+  [ '1.7.2.rc0.13.gc9eaaa', 'version_gt', '1.7.0.4' ],
+  [ '1.7.1.rc2',            'version_gt', '1.7.1.rc1' ],
+  [ '1.7.2.rc0.1.g078e',    'version_gt', '1.7.2.rc0' ],
+  [ '1.7.2.rc0.10.g1ba5c',  'version_gt', '1.7.2.rc0.1.g078e' ],
+  [ '1.7.1.1',              'version_gt', '1.7.1.1.gc8c07' ],
+  [ '1.7.1.1',              'version_gt', '1.7.1.1.g5f35a' ],
+  [ '1.0.0b',               'version_gt', '1.0.0a' ],
+  [ '1.0.3',                'version_gt', '1.0.0a' ],
+  [ '1.7.0.4',              'version_ne', '1.7.2.rc0.13.gc9eaaa' ],
+  [ '1.7.1.rc1',            'version_ne', '1.7.1.rc2' ],
+  [ '1.0.0a',               'version_ne', '1.0.0' ],
+  [ '1.4.0.rc1',            'version_le', '1.4.1' ],
+  [ '1.0.0a',               'version_gt', '1.0.0' ],
+  [ '1.0.0a',               'version_lt', '1.0.3' ],
+  [ '1.0.0a',               'version_eq', '1.0.1' ],
+  [ '1.0.0b',               'version_eq', '1.0.2' ],
+  [ '1.7.1.236.g81fa0',     'version_gt', '1.7.1' ],
+  [ '1.7.1.236.g81fa0',     'version_lt', '1.7.1.1' ],
+  [ '1.7.1.211.g54fcb21',   'version_gt', '1.7.1.209.gd60ad81' ],
+  [ '1.7.1.211.g54fcb21',   'version_ge', '1.7.1.209.gd60ad81' ],
+  [ '1.7.1.209.gd60ad81',   'version_lt', '1.7.1.1.1.g66bd8ab' ],
+  [ '1.7.0.2.msysgit.0',    'version_gt', '1.6.6' ],
+  ;
+
 # operator reversal: $a op $b <=> $b rop $a
 my %reverse = (
     version_eq => 'version_eq',
