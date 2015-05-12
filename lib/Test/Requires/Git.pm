@@ -104,7 +104,14 @@ sub test_requires_git {
 
         # no plan declared yet
         elsif ( !defined $builder->has_plan ) {
-            $builder->skip_all($why);
+            if ( $builder->summary ) {
+                $builder->skip($why);
+                $builder->done_testing;
+                exit 0;
+            }
+            else {
+                $builder->skip_all($why);
+            }
         }
 
         # the plan is no_plan
