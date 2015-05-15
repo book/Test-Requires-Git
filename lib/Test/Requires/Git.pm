@@ -179,15 +179,14 @@ If the checks fail, then all tests will be I<skipped>.
         ...;
     }
 
-Takes a list of version requirements (see L</GIT VERSION CHECKING> below),
-and I<skip> all tests if one of them does not pass.
-
-If the C<skip> parameter is given, only the specified number of tests will
-be skipped.
-
+Takes a list of version requirements (see L</GIT VERSION CHECKING>
+below), and if one of them does not pass, I<skips> all remaining tests.
 All conditions must be satisfied for the check to pass.
 
-If no condition is given, C<test_requires_git> will only check if C<git>
+When the C<skip> parameter is given, only the specified number of tests
+will be skipped.
+
+If no condition is given, C<test_requires_git> will simply check if C<git>
 is available.
 
 =head1 GIT VERSION CHECKING
