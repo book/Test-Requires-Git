@@ -61,12 +61,14 @@ sub import {
     test_requires_git(@_) if @_;
 }
 
+sub _git_version { qx{git --version} }
+
 sub test_requires_git {
     my @spec = @_;
     croak 'Odd number of elements in git specification' if @spec % 2;
 
     # get the git version
-    my ($version) = qx{git --version} =~ /^git version (.*)/g;
+    my ($version) = __PACKAGE__->_git_version() =~ /^git version (.*)/g;
 
     # perform the check
     my ( $ok, $skip, $why ) = ( 1, 0, '' );

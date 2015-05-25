@@ -3,17 +3,11 @@ package t::FakeGit;
 use strict;
 use warnings;
 
-use Config;
-use File::Spec;
-use File::Temp qw( tempdir );
-
-# push this to the PATH
-my $dir = tempdir( CLEANUP => 1 );
-$ENV{PATH} = join $Config::Config{path_sep}, $dir,
-  split /\Q$Config::Config{path_sep}\E/, $ENV{PATH} || '';
-
-# compute the 'git' filename
-my $file = File::Spec->catfile( $dir, $^O eq 'MSWin32' ? 'git.bat' : 'git' );
+# Test::Requires::Git must have been loaded already
+BEGIN {
+    require Test::Requires::Git
+      if !$INC{'Test/Requires/Git.pm'};
+}
 
 # import to build one fake git at compile time
 sub import {
@@ -27,20 +21,12 @@ sub import {
 # helper routine to build a fake fit binary
 sub fake_git {
     my ($version) = @_;
-    unlink $file if -e $file;
-
     my $message = $version =~ /^[0-9]/ ? "git version $version" : 'not git';
 
-    open my $fh, '>', $file or die "Can't open $file for writing: $!";
-    print {$fh} $^O eq 'MSWin32' ? << "WIN32" : << "UNIX";
-\@echo $message
-WIN32
-#!$^X
-print "$message\\n"
-UNIX
-    close $fh;
-    chmod 0755, $file;
-    return $version;
+    # monkey patch the code that returns git version
+    no strict 'refs';
+    no warnings 'redefine';
+    *{'Test::Requires::Git::_git_version'} = sub { "$message\n" };
 }
 
 1;
