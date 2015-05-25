@@ -4,7 +4,7 @@ use Test::More;
 
 use Test::Requires::Git;
 
-plan tests => 4;
+plan tests => 5;
 
 ok( !eval { test_requires_git 'zlonk' }, 'odd specification' );
 like(
@@ -19,3 +19,7 @@ like(
     qr/^Unknown git specification 'zlonk' /,
     '... expected error message'
 );
+
+$ENV{PATH} = '';
+test_requires_git;
+fail( 'cannot happen');
