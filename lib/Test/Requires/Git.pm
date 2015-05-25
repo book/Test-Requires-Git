@@ -38,7 +38,6 @@ sub _version_gt {
 }
 
 my %check = (
-    version    => sub { $_[0] eq $_[1] },
     version_eq => sub { $_[0] eq $_[1] },
     version_ne => sub { $_[0] ne $_[1] },
     version_gt => sub { _version_gt(@_) },
@@ -46,6 +45,14 @@ my %check = (
     version_lt => sub { $_[0] ne $_[1] && !_version_gt(@_) },
     version_ge => sub { $_[0] eq $_[1] || _version_gt(@_) },
 );
+
+# aliases
+$check{'=='} = $check{eq} = $check{version} = $check{version_eq};
+$check{'!='} = $check{ne} = $check{version_ne};
+$check{'>'}  = $check{gt} = $check{version_gt};
+$check{'<='} = $check{le} = $check{version_le};
+$check{'<'}  = $check{lt} = $check{version_lt};
+$check{'>='} = $check{ge} = $check{version_ge};
 
 sub import {
     my $class = shift;
@@ -198,16 +205,17 @@ The following version checks are currently supported.
 Note that versions C<1.0.0a> and C<1.0.0b> are respectively turned into
 C<1.0.1> and C<1.0.2> internally.
 
-=head2 version
-
 =head2 version_eq
 
-    test_requires_git version    => $version;
+Aliases: C<version_eq>, C<eq>, C<==>, C<version>.
+
     test_requires_git version_eq => $version;
 
 Passes if the current B<git> version is I<equal> to C<$version>.
 
 =head2 version_ne
+
+Aliases: C<version_ne>, C<ne>, C<!=>.
 
     test_requires_git version_eq => $version;
 
@@ -215,11 +223,15 @@ Passes if the current B<git> version is I<not equal> to C<$version>.
 
 =head2 version_lt
 
+Aliases: C<version_lt>, C<lt>, C<E<lt>>.
+
     test_requires_git version_lt => $version;
 
 Passes if the current B<git> version is I<less than> C<$version>.
 
 =head2 version_gt
+
+Aliases: C<version_gt>, C<gt>, C<E<gt>>.
 
     test_requires_git version_gt => $version;
 
@@ -227,11 +239,15 @@ Passes if the current B<git> version is I<greater than> C<$version>.
 
 =head2 version_le
 
+Aliases: C<version_le>, C<le>, C<E<lt>=>.
+
     test_requires_git version_le => $version;
 
 Passes if the current B<git> version is I<less than or equal> C<$version>.
 
 =head2 version_ge
+
+Aliases: C<version_ge>, C<ge>, C<E<gt>=>.
 
     test_requires_git version_ge => $version;
 
