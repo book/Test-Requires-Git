@@ -75,7 +75,10 @@ sub test_requires_git {
     croak 'Odd number of elements in git specification' if @spec % 2;
 
     # get the git version
-    my ($version) = __PACKAGE__->_git_version() =~ /^git version (.*)/g;
+    my ($version) = do {
+        no warnings 'uninitialized';
+        __PACKAGE__->_git_version() =~ /^git version (.*)/g;
+    };
 
     # perform the check
     my ( $ok, $skip, $why ) = ( 1, 0, '' );
