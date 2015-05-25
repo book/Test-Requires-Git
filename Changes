@@ -2,6 +2,12 @@ Revision history for Test-Requires-Git
 
 {{$NEXT}}
 
+1.002 Mon May 25 2015
+    - added supports for many aliases
+    - improved support for skipping "all remaining tests"
+    - made the test suite more reliable by not mangling the system
+      (thanks to Christian Walde (MITHALDU) for the idea)
+
 1.001 Tue May 12 2015
     - a bare test_requires_git will skip if git is not available
     - improved test coverage
