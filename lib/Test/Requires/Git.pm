@@ -68,11 +68,28 @@ sub import {
     test_requires_git(@_);
 }
 
+sub _extract_arguments {
+    my (@args) = @_;
+    croak 'Odd number of elements in git specification' if @args % 2;
+
+    my ( %args, @spec );
+    while ( my ( $key, $val ) = splice @args, 0, 2 ) {
+        if ( $key eq 'skip' ) {
+            croak "Duplicate $key argument" if exists $args{$key};
+            $args{$key} = $val;
+        }
+        else {
+            push @spec, $key, $val;
+        }
+    }
+    return wantarray ? ( \%args, @spec ) : \%args;
+}
+
 sub _git_version { qx{git --version} }
 
 sub test_requires_git {
-    my @spec = @_;
-    croak 'Odd number of elements in git specification' if @spec % 2;
+    my ( $args, @spec ) = _extract_arguments(@_);
+    my $skip = $args->{skip};
 
     # get the git version
     my ($version) = do {
@@ -81,14 +98,10 @@ sub test_requires_git {
     };
 
     # perform the check
-    my ( $ok, $skip, $why ) = ( 1, 0, '' );
+    my ( $ok, $why ) = ( 1, '' );
     if ($version) {
         $version =~ s/(?<=^1\.0\.)0([ab])$/$1^"P"/e;    # aliases
         while ( my ( $spec, $arg ) = splice @spec, 0, 2 ) {
-            if ( $spec eq 'skip' ) {
-                $skip = $arg;
-                next;
-            }
             croak "Unknown git specification '$spec'" if !exists $check{$spec};
             $arg =~ s/(?<=^1\.0\.)0([ab])$/$1^"P"/e;    # aliases
             if ( !$why && !$check{$spec}->( $version, $arg ) ) {
@@ -100,7 +113,6 @@ sub test_requires_git {
     else {
         $ok   = 0;
         $why  = '`git` binary not available or broken';
-        $skip = {@spec}->{skip};
     }
 
     # skip if needed
