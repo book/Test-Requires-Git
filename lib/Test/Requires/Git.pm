@@ -107,6 +107,7 @@ sub test_requires_git {
             if ( !$why && !$check{$spec}->( $version, $arg ) ) {
                 $ok  = 0;
                 $why = "$version $spec $arg";
+                last;
             }
         }
     }
