@@ -65,7 +65,7 @@ sub import {
     }
 
     # test arguments
-    test_requires_git(@_) if @_;
+    test_requires_git(@_);
 }
 
 sub _git_version { qx{git --version} }
@@ -152,6 +152,7 @@ Test::Requires::Git - Check your test requirements against the available version
 
 =head1 SYNOPSIS
 
+    # will skip all if git is not available
     use Test::Requires::Git;
 
     # needs some git that supports `git init $dir`
@@ -200,6 +201,10 @@ will be skipped.
 
 If no condition is given, C<test_requires_git> will simply check if C<git>
 is available.
+
+C<use Test::Requires::Git> always calls C<test_requires_git> with the
+given arguments. If you don't want C<test_requires_git> to be called,
+write C<use Test::Requires::Git ();> instead.
 
 =head1 GIT VERSION CHECKING
 
