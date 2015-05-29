@@ -83,7 +83,7 @@ sub _extract_arguments {
     my ( %args, @spec );
     while ( my ( $key, $val ) = splice @args, 0, 2 ) {
         if ( $key =~ /^(?:git|skip)/ ) {
-            croak "Duplicate $key argument" if exists $args{$key};
+            croak "Duplicate '$key' argument" if exists $args{$key};
             $args{$key} = $val;
         }
         else {
