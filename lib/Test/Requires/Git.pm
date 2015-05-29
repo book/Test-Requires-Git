@@ -64,9 +64,10 @@ sub import {
         *{"$caller\::test_requires_git"} = \&test_requires_git;
     }
 
+    return if @_ == 1 && $_[0] eq '-nocheck';
+
     # test arguments
-    test_requires_git(@_)
-      unless @_ == 1 && $_[0] eq '-nocheck';
+    test_requires_git(@_);
 }
 
 sub _extract_arguments {
