@@ -3,7 +3,7 @@ use warnings;
 use Test::More;
 use t::FakeGit 'broken';
 
-use Test::Requires::Git;
+use Test::Requires::Git -nocheck;
 
 plan tests => 3;
 

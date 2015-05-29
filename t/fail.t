@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use Test::More;
 
-use Test::Requires::Git;
+use Test::Requires::Git -nocheck;
 
 plan tests => 5;
 
