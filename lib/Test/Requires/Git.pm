@@ -8,6 +8,8 @@ use Scalar::Util qw( looks_like_number );
 
 use base 'Test::Builder::Module';
 
+our $GIT = 'git';
+
 # comparison logic stolen from Git::Repository
 sub _version_gt {
     my ( $v1, $v2 ) = @_;
@@ -66,6 +68,10 @@ sub import {
 
     return if @_ == 1 && $_[0] eq '-nocheck';
 
+    # reset the global $GIT value
+    my $args = _extract_arguments(@_);
+    $GIT = $args->{git} if exists $args->{git};
+
     # test arguments
     test_requires_git(@_);
 }
@@ -76,7 +82,7 @@ sub _extract_arguments {
 
     my ( %args, @spec );
     while ( my ( $key, $val ) = splice @args, 0, 2 ) {
-        if ( $key eq 'skip' ) {
+        if ( $key =~ /^(?:git|skip)/ ) {
             croak "Duplicate $key argument" if exists $args{$key};
             $args{$key} = $val;
         }
@@ -87,12 +93,12 @@ sub _extract_arguments {
     return wantarray ? ( \%args, @spec ) : \%args;
 }
 
-sub _git_version { qx{git --version} }
+sub _git_version { qx{$GIT --version} }
 
 sub test_requires_git {
     my ( $args, @spec ) = _extract_arguments(@_);
     my $skip = $args->{skip};
-
+    local $GIT = $args->{git} if exists $args->{git};
 
     # get the git version
     my ($version) = do {
@@ -116,7 +122,7 @@ sub test_requires_git {
     }
     else {
         $ok   = 0;
-        $why  = '`git` binary not available or broken';
+        $why  = "`$GIT` binary not available or broken";
     }
 
     # skip if needed
@@ -208,6 +214,11 @@ If the checks fail, then all tests will be I<skipped>.
         ...;
     }
 
+    # force which git binary to use
+    test_requires_git
+      git        => '/usr/local/bin/git',
+      version_ge => '1.6.5';
+
 Takes a list of version requirements (see L</GIT VERSION CHECKING>
 below), and if one of them does not pass, I<skips> all remaining tests.
 All conditions must be satisfied for the check to pass.
@@ -215,12 +226,18 @@ All conditions must be satisfied for the check to pass.
 When the C<skip> parameter is given, only the specified number of tests
 will be skipped.
 
+When the C<git> parameter is given, C<test_requires_git> will run that
+instead of C<git> to perform the checks.
+
 If no condition is given, C<test_requires_git> will simply check if C<git>
 is available.
 
 C<use Test::Requires::Git> always calls C<test_requires_git> with the
 given arguments. If you don't want C<test_requires_git> to be called,
 write C<use Test::Requires::Git -nocheck;> instead.
+
+Passing the C<git> parameter to C<use Test::Requires::Git> will override
+it for the rest of the program run.
 
 =head1 GIT VERSION CHECKING
 
