@@ -65,7 +65,8 @@ sub import {
     }
 
     # test arguments
-    test_requires_git(@_);
+    test_requires_git(@_)
+      unless @_ == 1 && $_[0] eq '-nocheck';
 }
 
 sub _extract_arguments {
@@ -90,6 +91,7 @@ sub _git_version { qx{git --version} }
 sub test_requires_git {
     my ( $args, @spec ) = _extract_arguments(@_);
     my $skip = $args->{skip};
+
 
     # get the git version
     my ($version) = do {
@@ -217,7 +219,7 @@ is available.
 
 C<use Test::Requires::Git> always calls C<test_requires_git> with the
 given arguments. If you don't want C<test_requires_git> to be called,
-write C<use Test::Requires::Git ();> instead.
+write C<use Test::Requires::Git -nocheck;> instead.
 
 =head1 GIT VERSION CHECKING
 
