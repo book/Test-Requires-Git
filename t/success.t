@@ -3,7 +3,7 @@ use warnings;
 use Test::More;
 use t::FakeGit '1.2.3';
 
-use Test::Requires::Git; # load without check
+use Test::Requires::Git; # the check always passes, because of t::FakeGit
 
 plan tests => 9;
 
