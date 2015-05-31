@@ -2,6 +2,12 @@ Revision history for Test-Requires-Git
 
 {{$NEXT}}
 
+1.003 Sun May 31 2015
+    - a bare `use Test::Requires::Git` now checks if git is available
+    - the -nocheck option skips that check when there are not other
+      arguments to `use Test::Requires::Git`
+    - the 'git' option makes it possible to set the path to git
+
 1.002 Mon May 25 2015
     - added supports for many aliases
     - improved support for skipping "all remaining tests"
