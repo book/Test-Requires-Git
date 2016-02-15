@@ -4,48 +4,19 @@ use strict;
 use warnings;
 
 use Carp;
-use Scalar::Util qw( looks_like_number );
+use Git::Version::Compare ();
 
 use base 'Test::Builder::Module';
 
 our $GIT = 'git';
 
-# comparison logic stolen from Git::Repository
-sub _version_gt {
-    my ( $v1, $v2 ) = @_;
-
-    my @v1 = split /\./, $v1;
-    my @v2 = split /\./, $v2;
-
-    # pick up any dev parts
-    my @dev1 = splice @v1, -2 if substr( $v1[-1], 0, 1 ) eq 'g';
-    my @dev2 = splice @v2, -2 if substr( $v2[-1], 0, 1 ) eq 'g';
-
-    # skip to the first difference
-    shift @v1, shift @v2 while @v1 && @v2 && $v1[0] eq $v2[0];
-
-    # we're comparing dev versions with the same ancestor
-    if ( !@v1 && !@v2 ) {
-        @v1 = @dev1;
-        @v2 = @dev2;
-    }
-
-    # prepare the bits to compare
-    ( $v1, $v2 ) = ( $v1[0] || 0, $v2[0] || 0 );
-
-    # rcX is less than any number
-    return looks_like_number($v1)
-      ? looks_like_number($v2) ? $v1 > $v2 : 1
-      : looks_like_number($v2) ? ''        : $v1 gt $v2;
-}
-
 my %check = (
-    version_eq => sub { $_[0] eq $_[1] },
-    version_ne => sub { $_[0] ne $_[1] },
-    version_gt => sub { _version_gt(@_) },
-    version_le => sub { !_version_gt(@_) },
-    version_lt => sub { $_[0] ne $_[1] && !_version_gt(@_) },
-    version_ge => sub { $_[0] eq $_[1] || _version_gt(@_) },
+    version_eq => \&Git::Version::Compare::eq_git,
+    version_ne => \&Git::Version::Compare::ne_git,
+    version_gt => \&Git::Version::Compare::gt_git,
+    version_le => \&Git::Version::Compare::le_git,
+    version_lt => \&Git::Version::Compare::lt_git,
+    version_ge => \&Git::Version::Compare::ge_git,
 );
 
 # aliases
@@ -109,10 +80,8 @@ sub test_requires_git {
     # perform the check
     my ( $ok, $why ) = ( 1, '' );
     if ($version) {
-        $version =~ s/(?<=^1\.0\.)0([ab])$/$1^"P"/e;    # aliases
         while ( my ( $spec, $arg ) = splice @spec, 0, 2 ) {
             croak "Unknown git specification '$spec'" if !exists $check{$spec};
-            $arg =~ s/(?<=^1\.0\.)0([ab])$/$1^"P"/e;    # aliases
             if ( !$why && !$check{$spec}->( $version, $arg ) ) {
                 $ok  = 0;
                 $why = "$version $spec $arg";
