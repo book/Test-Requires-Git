@@ -82,7 +82,7 @@ sub test_requires_git {
     if ($version) {
         while ( my ( $spec, $arg ) = splice @spec, 0, 2 ) {
             croak "Unknown git specification '$spec'" if !exists $check{$spec};
-            if ( !$why && !$check{$spec}->( $version, $arg ) ) {
+            if ( !$check{$spec}->( $version, $arg ) ) {
                 $ok  = 0;
                 $why = "$version $spec $arg";
                 last;
