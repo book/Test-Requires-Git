@@ -2,6 +2,11 @@ Revision history for Test-Requires-Git
 
 {{$NEXT}}
 
+1.004 2016-02-29 BOOK
+    - Use Git::Version::Compare to compare versions
+    - Tests now cover 100% of the code
+    - Rewrite the Changes file according to CPAN::Changes::Spec
+
 1.003 2015-05-31 BOOK
     - a bare `use Test::Requires::Git` now checks if git is available
     - the -nocheck option skips that check when there are not other
