@@ -9,7 +9,7 @@ use Test::Requires::Git;
 pass('initial test');
 
 # ok
-test_requires_git version_gt => '1.2.0';
+test_requires_git version_gt => 'v1.2.0';
 
 # skip
 test_requires_git version_lt => '1.2.1';
