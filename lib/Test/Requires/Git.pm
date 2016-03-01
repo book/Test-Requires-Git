@@ -210,10 +210,11 @@ it for the rest of the program run.
 
 =head1 GIT VERSION CHECKING
 
-The following version checks are currently supported.
+The actual comparison is handled by L<Git::Version::Compare>, so the
+strings can be version numbers, tags from C<git.git> or the output of
+C<git version> or C<git describe>.
 
-Note that versions C<1.0.0a> and C<1.0.0b> are respectively turned into
-C<1.0.1> and C<1.0.2> internally.
+The following version checks are currently supported:
 
 =head2 version_eq
 
@@ -265,7 +266,7 @@ Passes if the current B<git> version is I<greater than or equal > C<$version>.
 
 =head1 SEE ALSO
 
-L<Test::Requires>
+L<Test::Requires>, L<Git::Version::Compare>.
 
 =head1 ACKNOWLEDGEMENTS
 
