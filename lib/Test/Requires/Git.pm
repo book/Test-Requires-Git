@@ -280,7 +280,7 @@ Philippe Bruhat (BooK), <book@cpan.org>.
 
 =head1 COPYRIGHT
 
-Copyright 2015 Philippe Bruhat (BooK), all rights reserved.
+Copyright 2015-2016 Philippe Bruhat (BooK), all rights reserved.
 
 =head1 LICENSE
 
