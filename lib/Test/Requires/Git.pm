@@ -215,8 +215,10 @@ If no condition is given, C<test_requires_git> will simply check if C<git>
 is available.
 
 C<use Test::Requires::Git> always calls C<test_requires_git> with the
-given arguments. If you don't want C<test_requires_git> to be called,
-write C<use Test::Requires::Git -nocheck;> instead.
+given arguments. If you don't want C<test_requires_git> to be called
+at import time, write this instead:
+
+    use Test::Requires::Git -nocheck;
 
 Passing the C<git> parameter to C<use Test::Requires::Git> will override
 it for the rest of the program run.
