@@ -9,7 +9,7 @@ plan tests => 7;
 ok( !eval { test_requires_git 'zlonk' }, 'odd specification' );
 like(
     $@,
-    qr/^Odd number of elements in git specification /,
+    qr/^zlonk does not look like a Git version /,
     '... expected error message'
 );
 

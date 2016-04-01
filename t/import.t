@@ -8,6 +8,6 @@ my $bad_use = 'use Test::Requires::Git -bonk;';
 ok( !eval $bad_use, $bad_use );
 like(
     $@,
-    qr/^Odd number of elements in git specification /,
+    qr/^-bonk does not look like a Git version /,
     '... expected error message'
 );
