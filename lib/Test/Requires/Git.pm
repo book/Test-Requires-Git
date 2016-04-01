@@ -57,6 +57,9 @@ sub _extract_arguments {
             croak "Duplicate '$key' argument" if exists $args{$key};
             $args{$key} = $val;
         }
+        elsif ( !exists $check{$key} ) {
+            croak "Unknown git specification '$key'";
+        }
         else {
             push @spec, $key, $val;
         }
@@ -81,7 +84,6 @@ sub test_requires_git {
     my ( $ok, $why ) = ( 1, '' );
     if ($version) {
         while ( my ( $spec, $arg ) = splice @spec, 0, 2 ) {
-            croak "Unknown git specification '$spec'" if !exists $check{$spec};
             if ( !$check{$spec}->( $version, $arg ) ) {
                 $ok  = 0;
                 $why = "$version $spec $arg";
