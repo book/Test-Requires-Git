@@ -176,6 +176,9 @@ If the checks fail, then all tests will be I<skipped>.
     # skip all
     test_requires_git version_ge => '1.6.5';
 
+    # giving no operator implies version_ge
+    test_requires_git '1.6.5';
+
     # skip 2
   SKIP: {
         test_requires_git
@@ -273,6 +276,15 @@ Aliases: C<version_ge>, C<ge>, C<E<gt>=>.
     test_requires_git version_ge => $version;
 
 Passes if the current B<git> version is I<greater than or equal > C<$version>.
+
+As a special shortcut for the most common case, a lone version number
+is turned into a C<version_ge> check, so the following two lines are
+exactly equivalent:
+
+    test_requires_git version_ge => '1.6.5';
+
+    # version_ge implied
+    test_requires_git '1.6.5';
 
 =head1 SEE ALSO
 
