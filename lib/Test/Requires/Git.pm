@@ -173,13 +173,19 @@ If the checks fail, then all tests will be I<skipped>.
 
 =head2 test_requires_git
 
-    # skip all
+    # skip all unless git is available as required
     test_requires_git version_ge => '1.6.5';
 
-    # giving no operator implies version_ge
+    # giving no operator implies 'version_ge'
     test_requires_git '1.6.5';
 
-    # skip 2
+    # skip 2 if git is not available
+  SKIP: {
+        test_requires_git skip => 2;
+        ...;
+    }
+
+    # skip 2 unless git is available as required
   SKIP: {
         test_requires_git
           skip       => 2,
@@ -187,14 +193,8 @@ If the checks fail, then all tests will be I<skipped>.
         ...;
     }
 
-    # skip all if git is not available
+    # skip all remaining tests if git is not available
     test_requires_git;
-
-    # skip 2 if git is not available
-  SKIP: {
-        test_requires_git skip => 2;
-        ...;
-    }
 
     # force which git binary to use
     test_requires_git
