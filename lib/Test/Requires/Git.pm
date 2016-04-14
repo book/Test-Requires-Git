@@ -162,12 +162,8 @@ Test::Requires::Git - Check your test requirements against the available version
 =head1 DESCRIPTION
 
 Test::Requires::Git checks if the version of Git available for testing
-meets the given requirements.
-
-The "current git" is obtained by running C<git --version> (so the first
-C<git> binary found in the C<PATH> will be tested).
-
-If the checks fail, then all tests will be I<skipped>.
+meets the given requirements. If the checks fail, then all tests will
+be I<skipped>.
 
 C<use Test::Requires::Git> always calls C<test_requires_git> with the
 given arguments. If you don't want C<test_requires_git> to be called
@@ -217,8 +213,20 @@ All conditions must be satisfied for the check to pass.
 When the C<skip> parameter is given, only the specified number of tests
 will be skipped.
 
+The "current git" is obtained by running C<git --version>.
+I.e. the first C<git> binary found in the current environment will
+be tested. This is of course sensitive to local changes to C<PATH>,
+so this will behave as expected:
+
+    # skip 4 tests if there's no git available in the alternative PATH
+  SKIP: {
+        local $ENV{PATH} = $alternative_PATH;
+        test_requires_git skip => 4;
+        ...;
+    }
+
 When the C<git> parameter is given, C<test_requires_git> will run that
-instead of C<git> to perform the checks.
+program instead of C<git>.
 
 If no condition is given, C<test_requires_git> will simply check if C<git>
 is available.
