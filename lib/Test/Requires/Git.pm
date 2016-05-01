@@ -85,7 +85,7 @@ sub test_requires_git {
     # get the git version
     my ($version) = do {
         no warnings 'uninitialized';
-        __PACKAGE__->_git_version() =~ /^git version (.*)/g;
+        __PACKAGE__->_git_version() =~ /^git version ([^\s]*)/g;
     };
 
     # perform the check
