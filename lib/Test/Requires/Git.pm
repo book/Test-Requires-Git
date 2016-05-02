@@ -94,6 +94,7 @@ sub test_requires_git {
         while ( my ( $spec, $arg ) = splice @spec, 0, 2 ) {
             if ( !$check{$spec}->( $version, $arg ) ) {
                 $ok  = 0;
+                $version =~ s/^git version|[\012\015]+$//g;
                 $why = "$version $spec $arg";
                 last;
             }
