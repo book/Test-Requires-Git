@@ -80,6 +80,7 @@ push @pass,
   [ '1.7.1.209.gd60ad81',   'version_lt', '1.7.1.1.1.g66bd8ab' ],
   [ '1.7.0.2.msysgit.0',    'version_gt', '1.6.6' ],
   [ '1.6.5.4.52.g952dfc6',  'version_gt', '1.6.5' ],
+  [ '2.6.4 (Apple Git-63)', 'version_gt', '1.6.5' ],
   ;
 
 # operator reversal: $a op $b <=> $b rop $a
