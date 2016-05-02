@@ -85,12 +85,12 @@ sub test_requires_git {
     # get the git version
     my ($version) = do {
         no warnings 'uninitialized';
-        __PACKAGE__->_git_version() =~ /^git version (.*)/g;
+        __PACKAGE__->_git_version();    # tests may override this
     };
 
     # perform the check
     my ( $ok, $why ) = ( 1, '' );
-    if ($version) {
+    if ( Git::Version::Compare::looks_like_git($version) ) {
         while ( my ( $spec, $arg ) = splice @spec, 0, 2 ) {
             if ( !$check{$spec}->( $version, $arg ) ) {
                 $ok  = 0;
