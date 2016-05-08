@@ -90,7 +90,7 @@ sub test_requires_git {
 
     # perform the check
     my ( $ok, $why ) = ( 1, '' );
-    if ( Git::Version::Compare::looks_like_git($version) ) {
+    if ( defined $version && Git::Version::Compare::looks_like_git($version) ) {
         while ( my ( $spec, $arg ) = splice @spec, 0, 2 ) {
             if ( !$check{$spec}->( $version, $arg ) ) {
                 $ok  = 0;
