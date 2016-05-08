@@ -21,12 +21,12 @@ sub import {
 # helper routine to build a fake fit binary
 sub fake_git {
     my ($version) = @_;
-    my $message = $version =~ /^[0-9]/ ? "git version $version" : 'not git';
+    $version =~ s/^(?=[0-9])/git version /;
 
     # monkey patch the code that returns git version
     no strict 'refs';
     no warnings 'redefine';
-    *{'Test::Requires::Git::_git_version'} = sub { "$message\n" };
+    *{'Test::Requires::Git::_git_version'} = sub { "$version\n" };
 }
 
 1;
