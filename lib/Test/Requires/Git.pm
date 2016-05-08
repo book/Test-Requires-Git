@@ -93,7 +93,7 @@ sub test_requires_git {
     if ( defined $version && Git::Version::Compare::looks_like_git($version) ) {
         while ( my ( $spec, $arg ) = splice @spec, 0, 2 ) {
             if ( !$check{$spec}->( $version, $arg ) ) {
-                $ok  = 0;
+                $ok = 0;
                 $version =~ s/^git version|[\012\015]+$//g;
                 $why = "$version $spec $arg";
                 last;
@@ -101,8 +101,8 @@ sub test_requires_git {
         }
     }
     else {
-        $ok   = 0;
-        $why  = "`$GIT` binary not available or broken";
+        $ok  = 0;
+        $why = "`$GIT` binary not available or broken";
     }
 
     # skip if needed
