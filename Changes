@@ -2,6 +2,11 @@ Revision history for Test-Requires-Git
 
 {{$NEXT}}
 
+1.006 2016-05-08 BOOK
+    - Documentation improvements
+    - Code improvements
+    - Add tests for git versions with comments
+
 1.005 2016-04-02 BOOK
     - Add support for a lone version argument (with implicit 'version_ge')
     - Minor documentation updates
