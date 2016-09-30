@@ -27,6 +27,8 @@ $check{'<='} = $check{le} = $check{version_le};
 $check{'<'}  = $check{lt} = $check{version_lt};
 $check{'>='} = $check{ge} = $check{version_ge};
 
+my $quiet = 0;
+
 sub import {
     my $class = shift;
     my $caller = caller(0);
@@ -36,6 +38,8 @@ sub import {
         no strict 'refs';
         *{"$caller\::test_requires_git"} = \&test_requires_git;
     }
+
+    @_ = grep !( $_ eq '-quiet' and $quiet = 1 ), @_;
 
     return if @_ == 1 && $_[0] eq '-nocheck';
 
@@ -88,6 +92,9 @@ sub test_requires_git {
         __PACKAGE__->_git_version();    # tests may override this
     };
 
+    my $builder = __PACKAGE__->builder;
+    $builder->diag( $version ), $quiet++ if !$quiet;
+
     # perform the check
     my ( $ok, $why ) = ( 1, '' );
     if ( defined $version && Git::Version::Compare::looks_like_git($version) ) {
@@ -107,7 +114,6 @@ sub test_requires_git {
 
     # skip if needed
     if ( !$ok ) {
-        my $builder = __PACKAGE__->builder;
 
         # skip a specified number of tests
         if ( $skip ) {
@@ -231,6 +237,12 @@ program instead of C<git>.
 
 If no condition is given, C<test_requires_git> will simply check if C<git>
 is available.
+
+The first time it's called, C<test_require_git> will print a test diagnostic
+with the output of C<git --version> (if C<git> is available, of course).
+To prevent this behaviour, load the module with:
+
+    use Test::Requires::Git -quiet;
 
 =head1 GIT VERSION CHECKING
 
