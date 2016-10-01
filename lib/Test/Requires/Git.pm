@@ -28,6 +28,7 @@ $check{'<'}  = $check{lt} = $check{version_lt};
 $check{'>='} = $check{ge} = $check{version_ge};
 
 my $quiet = 0;
+my $lock  = '.test.requires.git.lock';
 
 sub import {
     my $class = shift;
@@ -38,8 +39,6 @@ sub import {
         no strict 'refs';
         *{"$caller\::test_requires_git"} = \&test_requires_git;
     }
-
-    @_ = grep !( $_ eq '-quiet' and $quiet = 1 ), @_;
 
     return if @_ == 1 && $_[0] eq '-nocheck';
 
@@ -93,7 +92,12 @@ sub test_requires_git {
     };
 
     my $builder = __PACKAGE__->builder;
-    $builder->diag( $version ), $quiet++ if !$quiet;
+    if ( !$quiet && time - ( ( stat $lock )[9] || 0 ) > 60 ) {
+        $builder->diag($version);
+        $quiet++;
+        open my $fh, '>', $lock if !-e $lock;
+        utime( undef, undef, $lock );
+    }
 
     # perform the check
     my ( $ok, $why ) = ( 1, '' );

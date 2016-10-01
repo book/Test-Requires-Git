@@ -5,7 +5,7 @@ use List::Util qw( sum );
 use Scalar::Util qw( looks_like_number );
 
 use t::FakeGit;
-use Test::Requires::Git qw( -nocheck -quiet );
+use Test::Requires::Git -nocheck;
 
 # pick a random git version to work with
 my @version = (
