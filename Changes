@@ -2,6 +2,11 @@ Revision history for Test-Requires-Git
 
 {{$NEXT}}
 
+1.007 2016-10-02 BOOK
+    - Add an extra diagnostic reporting the git version used for testing
+      (with a scheme to limit the number of times it's output, so as not
+      to pollute test output too much)
+
 1.006 2016-05-08 BOOK
     - Documentation improvements
     - Code improvements
