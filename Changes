@@ -2,6 +2,10 @@ Revision history for Test-Requires-Git
 
 {{$NEXT}}
 
+1.008 2017-03-07 BOOK
+    - Make sure the test suite works as expected when @INC does not contain '.'
+      (closes RT #120537, thanks to KENTNL for the report)
+
 1.007 2016-10-02 BOOK
     - Add an extra diagnostic reporting the git version used for testing
       (with a scheme to limit the number of times it's output, so as not
