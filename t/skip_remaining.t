@@ -1,7 +1,9 @@
 use strict;
 use warnings;
 use Test::More;
-use t::FakeGit '1.6.5';
+
+use lib 't/lib';
+use FakeGit '1.6.5';
 
 use Test::Requires::Git;
 

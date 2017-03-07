@@ -1,4 +1,4 @@
-package t::FakeGit;
+package FakeGit;
 
 use strict;
 use warnings;

@@ -4,7 +4,8 @@ use Test::More;
 use List::Util qw( sum );
 use Scalar::Util qw( looks_like_number );
 
-use t::FakeGit;
+use lib 't/lib';
+use FakeGit;
 use Test::Requires::Git -nocheck;
 
 # pick a random git version to work with
